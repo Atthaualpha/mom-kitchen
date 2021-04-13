@@ -1,11 +1,14 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Item } from './item.model';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity({ schema: 'management' })
 export class Author {
+  @PrimaryColumn()
+  id: number;
 
-    @PrimaryColumn()
-    id: number;
+  @Column()
+  name: string;
 
-    @Column()
-    name: string
+  @OneToMany(() => Item, (item) => item.author)
+  items: Item[];
 }

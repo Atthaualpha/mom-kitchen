@@ -1,3 +1,5 @@
+import { MedicineDet } from './../models/medicineDet.model';
+import { Item } from './../models/item.model';
 import { Author } from './../models/author.model';
 import { AuthorService } from '../services/author.service';
 import { AuthorController } from './../controllers/author.controller';
@@ -9,6 +11,9 @@ import { ItemController } from '../controllers/item.controller';
 import { CategoryService } from '../services/category.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Category } from 'src/models/category.model';
+import { Step } from 'src/models/step.model';
+import { Ingredient } from 'src/models/ingredient.model';
+import { FootDet } from 'src/models/foodDet.model';
 
 @Module({
   imports: [
@@ -19,9 +24,10 @@ import { Category } from 'src/models/category.model';
       username: 'postgres',
       password: '1234',
       database: 'MomKitchen',
-      entities: [Category, Author],
+      logging: true,
+      entities: [Category, Author, Item, Step, Ingredient, FootDet, MedicineDet],
     }),
-    TypeOrmModule.forFeature([Category, Author]),
+    TypeOrmModule.forFeature([Category, Author, Item, Step, Ingredient, FootDet, MedicineDet]),
   ],
   controllers: [
     ItemController,
