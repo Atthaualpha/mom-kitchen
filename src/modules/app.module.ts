@@ -14,6 +14,8 @@ import { Category } from 'src/models/category.model';
 import { Step } from 'src/models/step.model';
 import { Ingredient } from 'src/models/ingredient.model';
 import { FootDet } from 'src/models/foodDet.model';
+import { AutoSuggestController } from 'src/controllers/autosuggest.controller';
+import { AutoSuggestService } from 'src/services/autosuggest.service';
 
 @Module({
   imports: [
@@ -34,7 +36,8 @@ import { FootDet } from 'src/models/foodDet.model';
     CategoryController,
     IngredientController,
     AuthorController,
+    AutoSuggestController
   ],
-  providers: [ItemService, CategoryService, AuthorService],
+  providers: [ItemService, CategoryService, AuthorService, AutoSuggestService],
 })
 export class AppModule {}

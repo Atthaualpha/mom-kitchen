@@ -2,7 +2,7 @@ import { Item } from './item.model';
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
 
 
-@Entity({schema: 'management', name: 'foot_det'})
+@Entity({schema: 'management', name: 'food_det'})
 export class FootDet {
     
     @PrimaryColumn()
@@ -14,7 +14,7 @@ export class FootDet {
     @Column()
     serving: number;
 
-    @OneToOne(() => Item)
+    @OneToOne(() => Item, item => item.foodDet)
     @JoinColumn({name: 'item_id'})
     item: Item
 }

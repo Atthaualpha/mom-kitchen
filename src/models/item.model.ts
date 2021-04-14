@@ -1,8 +1,9 @@
 import { Ingredient } from './ingredient.model';
 import { Category } from 'src/models/category.model';
 import { Author } from 'src/models/author.model';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { Step } from './step.model';
+import { FootDet } from './foodDet.model';
 
 @Entity({ schema: 'management' })
 export class Item {
@@ -17,6 +18,9 @@ export class Item {
 
   @Column()
   description: string
+
+  @OneToOne(() => FootDet, foodDet => foodDet.item)
+  foodDet: FootDet
 
   @OneToMany(() => Ingredient, ingredient => ingredient.item)
   ingredients: Ingredient[];
