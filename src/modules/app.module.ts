@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { MedicineDet } from './../models/medicineDet.model';
 import { Item } from './../models/item.model';
 import { Author } from './../models/author.model';
@@ -16,9 +17,14 @@ import { Ingredient } from 'src/models/ingredient.model';
 import { FootDet } from 'src/models/foodDet.model';
 import { AutoSuggestController } from 'src/controllers/autosuggest.controller';
 import { AutoSuggestService } from 'src/services/autosuggest.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
+
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public')
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -30,6 +36,7 @@ import { AutoSuggestService } from 'src/services/autosuggest.service';
       entities: [Category, Author, Item, Step, Ingredient, FootDet, MedicineDet],
     }),
     TypeOrmModule.forFeature([Category, Author, Item, Step, Ingredient, FootDet, MedicineDet]),
+    
   ],
   controllers: [
     ItemController,
