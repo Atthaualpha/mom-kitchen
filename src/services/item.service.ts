@@ -15,7 +15,8 @@ export class ItemService {
   constructor(
     @InjectRepository(Item) private itemRepository: Repository<Item>,
     @InjectRepository(Author) private authorRepository: Repository<Author>,
-    @InjectRepository(Ingredient) private ingredientRepository: Repository<Ingredient>,
+    @InjectRepository(Ingredient)
+    private ingredientRepository: Repository<Ingredient>,
     @InjectRepository(Step) private stepRepository: Repository<Step>,
     @InjectRepository(Step) private Repository: Repository<Step>,
   ) {}
@@ -31,7 +32,7 @@ export class ItemService {
     this.addCriteria(params, builder);
 
     return builder.getMany();
-  } 
+  }
 
   private addCriteria(params: any, builder: SelectQueryBuilder<Item>) {
     new Map(Object.entries(params)).forEach((val, key) => {
@@ -54,24 +55,43 @@ export class ItemService {
   }
 
   saveItem(file: Express.Multer.File, body: ItemDto) {
-   
     const author = new Author();
     author.id = body.authorId;
 
     const category = new Category();
     category.id = body.categoryId;
 
-    const item = new Item();
+    const ingredients: Ingredient[] = body.ingredients.map(
+      (ele) => this.ingredientRepository.create({description: ele})
+    );
+    const steps: Step[] = body.steps.map((ele) => new Step(ele));
+
+    const item = this.itemRepository.create({
+      author,
+      category,
+      name: body.name,
+      description: body.description,      
+      imageUrl:
+        new Date().getTime() +
+        file.originalname.substring(file.originalname.indexOf('.')),
+      ingredients      
+    });
+
+    /*
     item.author = author;
     item.category = category;
     item.name = body.name;
     item.description = body.description;
-    item.imageUrl = new Date().getTime() + file.originalname.substring(file.originalname.indexOf('.'));
-    console.log(item)
+    item.imageUrl =
+      new Date().getTime() +
+      file.originalname.substring(file.originalname.indexOf('.'));
+    item.ingredients = ingredients;
+    item.steps = steps;*/
+
+    console.log(item);
     this.itemRepository.save(item);
 
-    this.saveImage(item.imageUrl,file)
-
+    this.saveImage(item.imageUrl, file);
   }
 
   private saveImage(imageName: string, file: Express.Multer.File) {
