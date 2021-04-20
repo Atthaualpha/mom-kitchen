@@ -1,22 +1,26 @@
 import { Item } from './item.model';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  BelongsTo,
+  Column,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
+} from 'sequelize-typescript';
 
-@Entity({ schema: 'management' })
-export class Ingredient { 
-
-  @PrimaryColumn()
+@Table({ schema: 'management', tableName: 'ingredient', createdAt: false, updatedAt: false })
+export class Ingredient extends Model {
+  @PrimaryKey
+  @Column({ autoIncrement:true })
   id: number;
 
-  @Column()
+  @Column
   description: string;
 
-  @ManyToOne(type => Item, (item) => item.ingredients)
-  @JoinColumn({ name: 'item_id' })
+  @ForeignKey(() => Item)
+  @Column({ field: 'item_id' })
+  itemId: number;
+
+  @BelongsTo(() => Item)
   item: Item;
-
-
-  constructor(description?: string) {
-    this.description = description;
-  }
-
 }

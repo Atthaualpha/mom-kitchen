@@ -1,19 +1,26 @@
 import { Item } from './item.model';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Model,
+  PrimaryKey,
+  Table,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 
-@Entity({ schema: 'management' })
-export class Step {
-  @PrimaryColumn()
+@Table({ schema: 'management', tableName: 'step', createdAt: false, updatedAt: false })
+export class Step extends Model {
+  @PrimaryKey
+  @Column({ autoIncrement:true })
   id: number;
 
-  @Column()
+  @Column
   description: string;
 
-  @ManyToOne(() => Item, (item) => item.steps)
-  @JoinColumn({ name: 'item_id' })
-  item: Item;
+  @ForeignKey(() => Item)
+  @Column({ field: 'item_id' })
+  itemId: number;
 
-  constructor(description?: string) {
-    this.description = description;
-  }
+  @BelongsTo(() => Item)
+  item: Item;
 }

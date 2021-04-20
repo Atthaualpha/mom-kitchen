@@ -6,12 +6,11 @@ import { ItemDto } from './../dto/request/itemDto';
 import { join } from 'path';
 import { Item } from './../models/item.model';
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
 const fs = require('fs');
 
 @Injectable()
 export class ItemService {
+  /*
   constructor(
     @InjectRepository(Item) private itemRepository: Repository<Item>,
     @InjectRepository(Author) private authorRepository: Repository<Author>,
@@ -86,7 +85,7 @@ export class ItemService {
       new Date().getTime() +
       file.originalname.substring(file.originalname.indexOf('.'));
     item.ingredients = ingredients;
-    item.steps = steps;*/
+    item.steps = steps;
 
     console.log(item);
     this.itemRepository.save(item);
@@ -97,5 +96,5 @@ export class ItemService {
   private saveImage(imageName: string, file: Express.Multer.File) {
     let path = join(__dirname, '..', 'public/img');
     fs.writeFileSync(`${path}/${imageName}`, file.buffer);
-  }
+  }*/
 }

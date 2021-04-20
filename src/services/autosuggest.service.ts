@@ -1,12 +1,10 @@
 import { Item } from './../models/item.model';
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { FootDet } from 'src/models/foodDet.model';
 
 @Injectable()
 export class AutoSuggestService {
-  constructor(
+ /* constructor(
     @InjectRepository(Item)
     private itemRepository: Repository<Item>,
     @InjectRepository(FootDet)
@@ -38,5 +36,5 @@ export class AutoSuggestService {
       .orderBy('food.serving','ASC')
       .getMany()
       .then((t) => t.map(food => food.serving));
-  }
+  }*/
 }
