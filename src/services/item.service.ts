@@ -23,42 +23,42 @@ export class ItemService {
   ) {}
 
   findByCriteria(params: any): Promise<Item[]> {
-    const filters = this.buildFilterCriteria(params);
-
     return this.itemModel.findAll({
-      attributes: ['id', 'image_url', 'description'],
+      attributes: ['id', 'name', 'image_url', 'description'],
       include: [
         {
           attributes: [],
           model: Category,
           required: true,
-          where: filters.category
         },
         {
-          model: FootDet
+          model: FootDet,
         },
       ],
+      where: {
+        ...this.buildFilterCriteria(params),
+      },
     });
   }
 
   private buildFilterCriteria(params: any): any {
-    let filters: any = { category: {}, foodDet: {} };
+    let filters: any = {};
 
     new Map(Object.entries(params)).forEach((val, key) => {
+      if (key === 'name') {
+        filters.name = { [Op.like]: `%${val}%` };
+      }
+
       if (key === 'category') {
-        filters.category.id =  val;
+        filters['$category.id$'] = val;
       }
 
       if (key === 'serving') {
-        filters.foodDet.serving = { [Op.and]: val };
-      }
-
-      if (key === 'name') {
-        filters.foodDet.name = { [Op.like]: `%${val}%` };
+        filters['$foodDet.serving$'] = val;
       }
 
       if (key === 'time') {
-        filters.foodDet.time = { [Op.like]: `%${val}%` };
+        filters['$foodDet.time$'] = { [Op.like]: `%${val}%` };
       }
     });
 
