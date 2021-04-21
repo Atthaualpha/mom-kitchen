@@ -4,7 +4,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 @Controller('autosuggest')
 export class AutoSuggestController {
   constructor(private readonly autoSuggestService: AutoSuggestService) {}
-/*
+
   @Get('/item')
   findAvailableName(@Query('q') q: string) {
     return this.autoSuggestService.findAvailableNames(q);
@@ -19,5 +19,4 @@ export class AutoSuggestController {
   findAvailableServing() {
     return this.autoSuggestService.findAvailableServing();
   }
-  */
 }

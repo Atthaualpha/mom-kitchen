@@ -1,40 +1,40 @@
 import { Item } from './../models/item.model';
 import { Injectable } from '@nestjs/common';
 import { FootDet } from 'src/models/foodDet.model';
+import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class AutoSuggestService {
- /* constructor(
-    @InjectRepository(Item)
-    private itemRepository: Repository<Item>,
-    @InjectRepository(FootDet)
-    private foodDetRepository: Repository<FootDet>,
+  constructor(
+    @InjectModel(Item) private itemModel: typeof Item,
+    @InjectModel(FootDet) private foodDetModel: typeof FootDet,
   ) {}
 
   findAvailableNames(criterio: string): Promise<string[]> {
-    return this.itemRepository
-      .createQueryBuilder('item')
-      .select('item.name')
-      .where('item.name like :name', { name: `%${criterio}%` })
-      .getMany()
-      .then((t) => t.map(item => item.name));
+    return this.itemModel
+      .findAll({
+        attributes: ['name'],
+        where: { name: { [Op.like]: `%${criterio}%` } },
+      })
+      .then((e) => e.map((item) => item.name));
   }
 
   findAvailableTimes(criterio: string): Promise<string[]> {
-    return this.foodDetRepository
-      .createQueryBuilder('food')
-      .select('food.time')
-      .where('food.time like :time', { time: `%${criterio}%` })
-      .getMany()
-      .then((t) => t.map(food => food.time));
+    return this.foodDetModel
+      .findAll({
+        attributes: ['time'],
+        where: { time: { [Op.like]: `%${criterio}%` } },
+      })
+      .then((e) => e.map((food) => food.time));
   }
 
   findAvailableServing(): Promise<number[]> {
-    return this.foodDetRepository
-      .createQueryBuilder('food')
-      .select('food.serving')
-      .orderBy('food.serving','ASC')
-      .getMany()
-      .then((t) => t.map(food => food.serving));
-  }*/
+    return this.foodDetModel
+      .findAll({
+        attributes: ['serving'],
+        order: [['serving', 'ASC']],
+      })
+      .then((e) => e.map((food) => food.serving));
+  }
 }

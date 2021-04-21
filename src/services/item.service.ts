@@ -6,53 +6,65 @@ import { ItemDto } from './../dto/request/itemDto';
 import { join } from 'path';
 import { Item } from './../models/item.model';
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
+import { FootDet } from 'src/models/foodDet.model';
 const fs = require('fs');
 
 @Injectable()
 export class ItemService {
-  /*
   constructor(
-    @InjectRepository(Item) private itemRepository: Repository<Item>,
-    @InjectRepository(Author) private authorRepository: Repository<Author>,
+    @InjectModel(Item)
+    private itemModel: typeof Item /* @InjectRepository(Author) private authorRepository: Repository<Author>,
     @InjectRepository(Ingredient)
     private ingredientRepository: Repository<Ingredient>,
     @InjectRepository(Step) private stepRepository: Repository<Step>,
-    @InjectRepository(Step) private Repository: Repository<Step>,
+    @InjectRepository(Step) private Repository: Repository<Step>,*/,
   ) {}
 
   findByCriteria(params: any): Promise<Item[]> {
-    let builder = this.itemRepository
-      .createQueryBuilder('item')
-      .select(['item.id', 'item.image_url', 'item.description'])
-      .innerJoin('item.category', 'category')
-      .leftJoin('item.foodDet', 'foodDet')
-      .where('1=1');
+    const filters = this.buildFilterCriteria(params);
 
-    this.addCriteria(params, builder);
-
-    return builder.getMany();
-  }
-
-  private addCriteria(params: any, builder: SelectQueryBuilder<Item>) {
-    new Map(Object.entries(params)).forEach((val, key) => {
-      if (key === 'category') {
-        builder.andWhere('category.id = :category', { category: val });
-      }
-
-      if (key === 'serving') {
-        builder.andWhere('foodDet.serving = :serving', { serving: val });
-      }
-
-      if (key === 'name') {
-        builder.andWhere('item.name like :name', { name: `%${val}%` });
-      }
-
-      if (key === 'time') {
-        builder.andWhere('foodDet.time like :time', { time: `%${val}%` });
-      }
+    return this.itemModel.findAll({
+      attributes: ['id', 'image_url', 'description'],
+      include: [
+        {
+          attributes: [],
+          model: Category,
+          required: true,
+          where: filters.category
+        },
+        {
+          model: FootDet
+        },
+      ],
     });
   }
 
+  private buildFilterCriteria(params: any): any {
+    let filters: any = { category: {}, foodDet: {} };
+
+    new Map(Object.entries(params)).forEach((val, key) => {
+      if (key === 'category') {
+        filters.category.id =  val;
+      }
+
+      if (key === 'serving') {
+        filters.foodDet.serving = { [Op.and]: val };
+      }
+
+      if (key === 'name') {
+        filters.foodDet.name = { [Op.like]: `%${val}%` };
+      }
+
+      if (key === 'time') {
+        filters.foodDet.time = { [Op.like]: `%${val}%` };
+      }
+    });
+
+    return filters;
+  }
+  /*
   saveItem(file: Express.Multer.File, body: ItemDto) {
     const author = new Author();
     author.id = body.authorId;
@@ -92,9 +104,9 @@ export class ItemService {
 
     this.saveImage(item.imageUrl, file);
   }
-
+*/
   private saveImage(imageName: string, file: Express.Multer.File) {
     let path = join(__dirname, '..', 'public/img');
     fs.writeFileSync(`${path}/${imageName}`, file.buffer);
-  }*/
+  }
 }

@@ -17,11 +17,11 @@ import { ItemService } from '../services/item.service';
 export class ItemController {
   constructor(private readonly itemService: ItemService) {}
 
- /* @Get()
+  @Get()
   findByCriteria(@Req() req: Request): any {
     return this.itemService.findByCriteria(req.query);
   }
-
+/*
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(
