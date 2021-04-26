@@ -2,7 +2,7 @@ import { Ingredient } from './ingredient.model';
 import { Category } from 'src/models/category.model';
 import { Author } from 'src/models/author.model';
 import { Step } from './step.model';
-import { FootDet } from './foodDet.model';
+import { FoodDet } from './foodDet.model';
 import {
   BelongsTo,
   Column,
@@ -13,11 +13,17 @@ import {
   HasMany,
   HasOne,
 } from 'sequelize-typescript';
+import { MedicineDet } from './medicineDet.model';
 
-@Table({ schema: 'management', tableName: 'item', createdAt: false, updatedAt: false })
+@Table({
+  schema: 'management',
+  tableName: 'item',
+  createdAt: false,
+  updatedAt: false,
+})
 export class Item extends Model {
   @PrimaryKey
-  @Column({ autoIncrement:true })
+  @Column({ autoIncrement: true })
   id: number;
 
   @Column
@@ -28,6 +34,12 @@ export class Item extends Model {
 
   @Column
   description: string;
+
+  @Column
+  itemType: number;
+
+  @Column
+  status: number;
 
   @ForeignKey(() => Author)
   @Column({ field: 'author_id' })
@@ -43,11 +55,14 @@ export class Item extends Model {
   @BelongsTo(() => Category)
   category: Category;
 
-  @HasOne(() => FootDet)
-  foodDet: FootDet;
+  @HasOne(() => FoodDet)
+  foodDet: FoodDet;
+
+  @HasOne(() => MedicineDet)
+  medicineDet: MedicineDet;
 
   @HasMany(() => Ingredient)
-  ingredient: Ingredient[];
+  ingredients: Ingredient[];
 
   @HasMany(() => Step)
   steps: Step[];

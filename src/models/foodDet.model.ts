@@ -9,7 +9,7 @@ import {
 } from 'sequelize-typescript';
 
 @Table({ schema: 'management', tableName: 'food_det', createdAt: false, updatedAt: false })
-export class FootDet extends Model {
+export class FoodDet extends Model {
   @PrimaryKey
   @Column({ autoIncrement:true })
   id: number;

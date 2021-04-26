@@ -14,5 +14,5 @@ export class ItemDto {
   serving: number;
 
   //medicine_det
-  use: string;
+  usage: string;
 }

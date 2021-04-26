@@ -1,6 +1,6 @@
 import { Item } from './../models/item.model';
 import { Injectable } from '@nestjs/common';
-import { FootDet } from 'src/models/foodDet.model';
+import { FoodDet } from 'src/models/foodDet.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 
@@ -8,7 +8,7 @@ import { Op } from 'sequelize';
 export class AutoSuggestService {
   constructor(
     @InjectModel(Item) private itemModel: typeof Item,
-    @InjectModel(FootDet) private foodDetModel: typeof FootDet,
+    @InjectModel(FoodDet) private foodDetModel: typeof FoodDet,
   ) {}
 
   findAvailableNames(criterio: string): Promise<string[]> {

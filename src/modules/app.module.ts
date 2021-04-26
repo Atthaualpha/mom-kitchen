@@ -13,7 +13,7 @@ import { CategoryService } from '../services/category.service';
 import { Category } from 'src/models/category.model';
 import { Step } from 'src/models/step.model';
 import { Ingredient } from 'src/models/ingredient.model';
-import { FootDet } from 'src/models/foodDet.model';
+import { FoodDet } from 'src/models/foodDet.model';
 import { AutoSuggestController } from 'src/controllers/autosuggest.controller';
 import { AutoSuggestService } from 'src/services/autosuggest.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -32,9 +32,9 @@ import { SequelizeModule } from '@nestjs/sequelize';
       username: 'postgres',
       password: '1234',
       database: 'MomKitchen',      
-      models: [Category, Author, Item, Step, Ingredient, FootDet, MedicineDet],
+      models: [Category, Author, Item, Step, Ingredient, FoodDet, MedicineDet],
     }),
-    SequelizeModule.forFeature([Category, Author, Item, Step, Ingredient, FootDet, MedicineDet]),
+    SequelizeModule.forFeature([Category, Author, Item, Step, Ingredient, FoodDet, MedicineDet]),
     
   ],
   controllers: [

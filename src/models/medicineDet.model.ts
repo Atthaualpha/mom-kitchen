@@ -15,7 +15,7 @@ export class MedicineDet extends Model {
   id: number;
 
   @Column
-  use: string;
+  usage: string;
 
   @ForeignKey(() => Item)
   @Column({ field: 'item_id' })

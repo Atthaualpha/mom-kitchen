@@ -23,4 +23,5 @@ export class Ingredient extends Model {
 
   @BelongsTo(() => Item)
   item: Item;
+
 }
