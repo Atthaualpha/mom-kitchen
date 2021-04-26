@@ -32,6 +32,7 @@ export class ItemService {
         { attributes: [], model: FoodDet },
       ],
       where: {
+        status: 1,
         ...this.buildFilterCriteria(params),
       },
     });
