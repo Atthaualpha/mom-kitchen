@@ -38,30 +38,6 @@ export class ItemService {
     });
   }
 
-  private buildFilterCriteria(params: any): any {
-    let filters: any = {};
-
-    new Map(Object.entries(params)).forEach((val, key) => {
-      if (key === 'name') {
-        filters.name = { [Op.like]: `%${val}%` };
-      }
-
-      if (key === 'category') {
-        filters['$category.id$'] = val;
-      }
-
-      if (key === 'serving') {
-        filters['$foodDet.serving$'] = val;
-      }
-
-      if (key === 'time') {
-        filters['$foodDet.time$'] = { [Op.like]: `%${val}%` };
-      }
-    });
-
-    return filters;
-  }
-
   saveItem(file: Express.Multer.File, body: ItemDto, callback: any) {
     try {
       const ingredients: any[] = body.ingredients.map((ele) => {
@@ -95,8 +71,49 @@ export class ItemService {
 
       callback({ message: 'ok' });
     } catch (error) {
-      callback(error);
+      callback(null, error);
     }
+  }
+
+  deleteItem(itemId: number, callback: any) {
+    try {
+      this.itemModel.update(
+        { status: StatusEnum.Inactive },
+        {
+          where: {
+            id: itemId,
+          },
+        },
+      );
+
+      callback({ message: 'ok' });
+    } catch (error) {
+      callback(null, error);
+    }
+  }
+
+  private buildFilterCriteria(params: any): any {
+    let filters: any = {};
+
+    new Map(Object.entries(params)).forEach((val, key) => {
+      if (key === 'name') {
+        filters.name = { [Op.like]: `%${val}%` };
+      }
+
+      if (key === 'category') {
+        filters['$category.id$'] = val;
+      }
+
+      if (key === 'serving') {
+        filters['$foodDet.serving$'] = val;
+      }
+
+      if (key === 'time') {
+        filters['$foodDet.time$'] = { [Op.like]: `%${val}%` };
+      }
+    });
+
+    return filters;
   }
 
   private buildItemDetail(body: ItemDto): any {

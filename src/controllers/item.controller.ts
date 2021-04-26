@@ -2,7 +2,9 @@ import { ItemDto } from './../dto/request/itemDto';
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Req,
   Res,
@@ -27,7 +29,7 @@ export class ItemController {
   uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Body('request') body: any,
-    @Res() res: Response
+    @Res() res: Response,
   ) {
     this.itemService.saveItem(
       file,
@@ -39,5 +41,15 @@ export class ItemController {
         res.status(200).json(resp);
       },
     );
+  }
+
+  @Delete(':id')
+  deleteItem(@Param('id') itemId: number, @Res() res: Response) {
+    this.itemService.deleteItem(itemId, (resp, error) => {
+      if (error) {
+        res.status(500).send(error);
+      }
+      res.status(200).json(resp);
+    });
   }
 }

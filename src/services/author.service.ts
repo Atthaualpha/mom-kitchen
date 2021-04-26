@@ -17,9 +17,9 @@ export class AuthorService {
   async createAuthor(authorDto: AuthorDTO, callback: any) {
     try {
       await this.authorModel.create(authorDto)
-      callback( { message : 'ok'})   
+      callback({ message : 'ok'})   
     } catch (error) {
-      callback(error)   
+      callback(null, error)   
     }
     
   }
