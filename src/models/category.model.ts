@@ -1,14 +1,15 @@
 import { Item } from './item.model';
-import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
+import { Column, HasMany, PrimaryKey, Table, Model } from 'sequelize-typescript';
 
-@Entity({ schema: 'management' })
-export class Category {
-  @PrimaryColumn()
+@Table({ schema: 'management', tableName: 'category', createdAt: false, updatedAt: false })
+export class Category extends Model {
+  @PrimaryKey
+  @Column({ autoIncrement:true })
   id: Number;
 
-  @Column()
+  @Column
   name: string;
 
-  @OneToMany(() => Item, (item) => item.category)
+  @HasMany(() => Item)
   items: Item[];
 }

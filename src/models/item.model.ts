@@ -1,38 +1,69 @@
 import { Ingredient } from './ingredient.model';
 import { Category } from 'src/models/category.model';
 import { Author } from 'src/models/author.model';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { Step } from './step.model';
-import { FootDet } from './foodDet.model';
+import { FoodDet } from './foodDet.model';
+import {
+  BelongsTo,
+  Column,
+  ForeignKey,
+  PrimaryKey,
+  Table,
+  Model,
+  HasMany,
+  HasOne,
+} from 'sequelize-typescript';
+import { MedicineDet } from './medicineDet.model';
 
-@Entity({ schema: 'management' })
-export class Item {
-  @PrimaryColumn()
+@Table({
+  schema: 'management',
+  tableName: 'item',
+  createdAt: false,
+  updatedAt: false,
+})
+export class Item extends Model {
+  @PrimaryKey
+  @Column({ autoIncrement: true })
   id: number;
 
-  @Column()
+  @Column
   name: string;
 
-  @Column({name: 'image_url'})
+  @Column({ field: 'image_url' })
   imageUrl: string;
 
-  @Column()
-  description: string
+  @Column
+  description: string;
 
-  @OneToOne(() => FootDet, foodDet => foodDet.item)
-  foodDet: FootDet
+  @Column
+  itemType: number;
 
-  @OneToMany(() => Ingredient, ingredient => ingredient.item)
-  ingredients: Ingredient[];
+  @Column
+  status: number;
 
-  @OneToMany(() => Step, step => step.item)
-  steps: Step[]
+  @ForeignKey(() => Author)
+  @Column({ field: 'author_id' })
+  authorId: number;
 
-  @ManyToOne(() => Author, author => author.items)
-  @JoinColumn({ name: "author_id" })
+  @BelongsTo(() => Author)
   author: Author;
 
-  @ManyToOne(() => Category, category => category.items)
-  @JoinColumn({ name: "category_id" })
+  @ForeignKey(() => Category)
+  @Column({ field: 'category_id' })
+  categoryId: number;
+
+  @BelongsTo(() => Category)
   category: Category;
+
+  @HasOne(() => FoodDet)
+  foodDet: FoodDet;
+
+  @HasOne(() => MedicineDet)
+  medicineDet: MedicineDet;
+
+  @HasMany(() => Ingredient)
+  ingredients: Ingredient[];
+
+  @HasMany(() => Step)
+  steps: Step[];
 }

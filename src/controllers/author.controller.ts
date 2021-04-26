@@ -1,6 +1,6 @@
 import { AuthorDTO } from './../dto/request/authorDto';
 import { AuthorService } from './../services/author.service';
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Res } from '@nestjs/common';
 import { Author } from 'src/models/author.model';
 import { Response } from 'express';
 
@@ -22,4 +22,5 @@ export class AuthorController {
         res.status(200).json(resp);
     })    
   }
+
 }

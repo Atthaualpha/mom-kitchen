@@ -1,77 +1,140 @@
-import { Category } from 'src/models/category.model';
+import { FoodDet } from './../models/foodDet.model';
 import { Step } from 'src/models/step.model';
 import { Ingredient } from 'src/models/ingredient.model';
-import { Author } from 'src/models/author.model';
+import { ItemTypeEnum } from './../constants/itemTypeEnum';
+import { Category } from 'src/models/category.model';
 import { ItemDto } from './../dto/request/itemDto';
 import { join } from 'path';
 import { Item } from './../models/item.model';
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
+import { StatusEnum } from 'src/constants/statusEnum';
+import { MedicineDet } from 'src/models/medicineDet.model';
 const fs = require('fs');
 
 @Injectable()
 export class ItemService {
   constructor(
-    @InjectRepository(Item) private itemRepository: Repository<Item>,
-    @InjectRepository(Author) private authorRepository: Repository<Author>,
-    @InjectRepository(Ingredient) private ingredientRepository: Repository<Ingredient>,
-    @InjectRepository(Step) private stepRepository: Repository<Step>,
-    @InjectRepository(Step) private Repository: Repository<Step>,
+    @InjectModel(Item)
+    private itemModel: typeof Item,
   ) {}
 
   findByCriteria(params: any): Promise<Item[]> {
-    let builder = this.itemRepository
-      .createQueryBuilder('item')
-      .select(['item.id', 'item.image_url', 'item.description'])
-      .innerJoin('item.category', 'category')
-      .leftJoin('item.foodDet', 'foodDet')
-      .where('1=1');
-
-    this.addCriteria(params, builder);
-
-    return builder.getMany();
-  } 
-
-  private addCriteria(params: any, builder: SelectQueryBuilder<Item>) {
-    new Map(Object.entries(params)).forEach((val, key) => {
-      if (key === 'category') {
-        builder.andWhere('category.id = :category', { category: val });
-      }
-
-      if (key === 'serving') {
-        builder.andWhere('foodDet.serving = :serving', { serving: val });
-      }
-
-      if (key === 'name') {
-        builder.andWhere('item.name like :name', { name: `%${val}%` });
-      }
-
-      if (key === 'time') {
-        builder.andWhere('foodDet.time like :time', { time: `%${val}%` });
-      }
+    return this.itemModel.findAll({
+      attributes: ['id', 'name', 'image_url', 'description'],
+      include: [
+        {
+          attributes: [],
+          model: Category,
+          required: true,
+        },
+        { attributes: [], model: FoodDet },
+      ],
+      where: {
+        status: 1,
+        ...this.buildFilterCriteria(params),
+      },
     });
   }
 
-  saveItem(file: Express.Multer.File, body: ItemDto) {
-   
-    const author = new Author();
-    author.id = body.authorId;
+  saveItem(file: Express.Multer.File, body: ItemDto, callback: any) {
+    try {
+      const ingredients: any[] = body.ingredients.map((ele) => {
+        return { description: ele };
+      });
+      const steps: any[] = body.steps.map((ele) => {
+        return { description: ele };
+      });
 
-    const category = new Category();
-    category.id = body.categoryId;
+      const imageUrl = this.buildImageUrl(file);
 
-    const item = new Item();
-    item.author = author;
-    item.category = category;
-    item.name = body.name;
-    item.description = body.description;
-    item.imageUrl = new Date().getTime() + file.originalname.substring(file.originalname.indexOf('.'));
-    console.log(item)
-    this.itemRepository.save(item);
+      this.itemModel.create(
+        {
+          authorId: body.authorId,
+          categoryId: body.categoryId,
+          name: body.name,
+          description: body.description,
+          status: StatusEnum.Active,
+          itemType: body.itemType,
+          imageUrl,
+          steps,
+          ingredients,
+          ...this.buildItemDetail(body),
+        },
+        {
+          include: [Ingredient, Step, FoodDet, MedicineDet],
+        },
+      );
 
-    this.saveImage(item.imageUrl,file)
+      this.saveImage(imageUrl, file);
 
+      callback({ message: 'ok' });
+    } catch (error) {
+      callback(null, error);
+    }
+  }
+
+  deleteItem(itemId: number, callback: any) {
+    try {
+      this.itemModel.update(
+        { status: StatusEnum.Inactive },
+        {
+          where: {
+            id: itemId,
+          },
+        },
+      );
+
+      callback({ message: 'ok' });
+    } catch (error) {
+      callback(null, error);
+    }
+  }
+
+  private buildFilterCriteria(params: any): any {
+    let filters: any = {};
+
+    new Map(Object.entries(params)).forEach((val, key) => {
+      if (key === 'name') {
+        filters.name = { [Op.like]: `%${val}%` };
+      }
+
+      if (key === 'category') {
+        filters['$category.id$'] = val;
+      }
+
+      if (key === 'serving') {
+        filters['$foodDet.serving$'] = val;
+      }
+
+      if (key === 'time') {
+        filters['$foodDet.time$'] = { [Op.like]: `%${val}%` };
+      }
+    });
+
+    return filters;
+  }
+
+  private buildItemDetail(body: ItemDto): any {
+    let itemDetail: any = {};
+    switch (body.itemType) {
+      case ItemTypeEnum.Food:
+        itemDetail = { foodDet: { time: body.time, serving: body.serving } };
+        break;
+
+      case ItemTypeEnum.Medicine:
+        itemDetail = { medicineDet: { usage: body.usage } };
+        break;
+    }
+    return itemDetail;
+  }
+
+  private buildImageUrl(file: Express.Multer.File): string {
+    return (
+      new Date().getTime() +
+      file.originalname.substring(file.originalname.indexOf('.'))
+    );
   }
 
   private saveImage(imageName: string, file: Express.Multer.File) {

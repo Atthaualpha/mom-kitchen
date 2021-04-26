@@ -1,26 +1,25 @@
 import { AuthorDTO } from './../dto/request/authorDto';
 import { Author } from './../models/author.model';
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
 export class AuthorService {
   constructor(
-    @InjectRepository(Author)
-    private authorRepository: Repository<Author>,
+    @InjectModel(Author)
+    private authorModel: typeof Author
   ) {}
 
   findAllAuthors(): Promise<Author[]> { 
-    return this.authorRepository.createQueryBuilder('author').select('author.name').getMany();
+    return this.authorModel.findAll({attributes: ['name']})
   }
 
   async createAuthor(authorDto: AuthorDTO, callback: any) {
     try {
-      await this.authorRepository.save(authorDto)  
-      callback( { message : 'ok'})   
+      await this.authorModel.create(authorDto)
+      callback({ message : 'ok'})   
     } catch (error) {
-      callback(error)   
+      callback(null, error)   
     }
     
   }

@@ -1,17 +1,16 @@
 import { Category } from './../models/category.model';
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
+    @InjectModel(Category)
+    private categoryModel: typeof Category
   ) {}
 
   async findAllCategories(): Promise<Category[]> {
-    return this.categoryRepository.find();
+    return this.categoryModel.findAll();
   }
 
 }

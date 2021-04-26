@@ -1,20 +1,29 @@
 import { Item } from './item.model';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import {
+  BelongsTo,
+  Column,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
+} from 'sequelize-typescript';
 
+@Table({ schema: 'management', tableName: 'food_det', createdAt: false, updatedAt: false })
+export class FoodDet extends Model {
+  @PrimaryKey
+  @Column({ autoIncrement:true })
+  id: number;
 
-@Entity({schema: 'management', name: 'food_det'})
-export class FootDet {
-    
-    @PrimaryColumn()
-    id: number;
+  @Column
+  time: string;
 
-    @Column()
-    time: string;
+  @Column
+  serving: number;
 
-    @Column()
-    serving: number;
+  @ForeignKey(() => Item)
+  @Column({ field: 'item_id' })
+  itemId: number;
 
-    @OneToOne(() => Item, item => item.foodDet)
-    @JoinColumn({name: 'item_id'})
-    item: Item
+  @BelongsTo(() => Item)
+  item: Item;
 }
