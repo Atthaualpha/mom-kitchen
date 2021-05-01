@@ -11,7 +11,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { StatusEnum } from 'src/constants/statusEnum';
 import { MedicineDet } from 'src/models/medicineDet.model';
-import { UpdateItemDto } from 'src/dto/request/UpdateItemDto';
+import { UpdateItemDto } from 'src/dto/request/updateItemDto';
 const fs = require('fs');
 
 @Injectable()

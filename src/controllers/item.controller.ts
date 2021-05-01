@@ -15,8 +15,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express';
 import { ItemService } from '../services/item.service';
-import { UpdatedAt } from 'sequelize-typescript';
-import { UpdateItemDto } from 'src/dto/request/UpdateItemDto';
+import { UpdateItemDto } from 'src/dto/request/updateItemDto';
 
 @Controller('item')
 export class ItemController {

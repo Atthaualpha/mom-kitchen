@@ -18,6 +18,7 @@ import { AutoSuggestController } from 'src/controllers/autosuggest.controller';
 import { AutoSuggestService } from 'src/services/autosuggest.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { IngredientService } from 'src/services/ingredient.service';
 
 
 @Module({
@@ -44,6 +45,6 @@ import { SequelizeModule } from '@nestjs/sequelize';
     AuthorController,
     AutoSuggestController
   ],
-  providers: [ItemService, CategoryService, AuthorService, AutoSuggestService],
+  providers: [ItemService, CategoryService, AuthorService, AutoSuggestService, IngredientService],
 })
 export class AppModule {}
