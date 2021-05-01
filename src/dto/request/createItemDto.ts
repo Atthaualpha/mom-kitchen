@@ -1,6 +1,6 @@
-import { ItemTypeEnum } from './../../constants/itemTypeEnum';
+import { ItemTypeEnum } from '../../constants/itemTypeEnum';
 
-export class ItemDto {
+export class CreateItemDto {
   name: string;
   description: string;
   categoryId: number;

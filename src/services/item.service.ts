@@ -3,7 +3,7 @@ import { Step } from 'src/models/step.model';
 import { Ingredient } from 'src/models/ingredient.model';
 import { ItemTypeEnum } from './../constants/itemTypeEnum';
 import { Category } from 'src/models/category.model';
-import { ItemDto } from './../dto/request/itemDto';
+import { CreateItemDto } from '../dto/request/createItemDto';
 import { join } from 'path';
 import { Item } from './../models/item.model';
 import { Injectable } from '@nestjs/common';
@@ -11,6 +11,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { StatusEnum } from 'src/constants/statusEnum';
 import { MedicineDet } from 'src/models/medicineDet.model';
+import { UpdateItemDto } from 'src/dto/request/UpdateItemDto';
 const fs = require('fs');
 
 @Injectable()
@@ -38,7 +39,11 @@ export class ItemService {
     });
   }
 
-  saveItem(file: Express.Multer.File, body: ItemDto, callback: any) {
+  async saveItem(
+    file: Express.Multer.File,
+    body: CreateItemDto,
+    callback: any,
+  ) {
     try {
       const ingredients: any[] = body.ingredients.map((ele) => {
         return { description: ele };
@@ -49,7 +54,7 @@ export class ItemService {
 
       const imageUrl = this.buildImageUrl(file);
 
-      this.itemModel.create(
+      await this.itemModel.create(
         {
           authorId: body.authorId,
           categoryId: body.categoryId,
@@ -75,9 +80,29 @@ export class ItemService {
     }
   }
 
-  deleteItem(itemId: number, callback: any) {
+  async updateItem(body: UpdateItemDto, callback: any) {
     try {
-      this.itemModel.update(
+      await this.itemModel.update(
+        {
+          name: body.name,
+          description: body.description,
+        },
+        {
+          where: {
+            id: body.id,
+          },
+        },
+      );
+
+      callback({ message: 'ok' });
+    } catch (error) {
+      callback(null, error);
+    }
+  }
+
+  async deleteItem(itemId: number, callback: any) {
+    try {
+      await this.itemModel.update(
         { status: StatusEnum.Inactive },
         {
           where: {
@@ -116,7 +141,7 @@ export class ItemService {
     return filters;
   }
 
-  private buildItemDetail(body: ItemDto): any {
+  private buildItemDetail(body: CreateItemDto): any {
     let itemDetail: any = {};
     switch (body.itemType) {
       case ItemTypeEnum.Food:

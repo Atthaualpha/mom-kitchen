@@ -1,4 +1,4 @@
-import { ItemDto } from './../dto/request/itemDto';
+import { CreateItemDto } from '../dto/request/createItemDto';
 import {
   Body,
   Controller,
@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Req,
   Res,
   UploadedFile,
@@ -14,6 +15,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express';
 import { ItemService } from '../services/item.service';
+import { UpdatedAt } from 'sequelize-typescript';
+import { UpdateItemDto } from 'src/dto/request/UpdateItemDto';
 
 @Controller('item')
 export class ItemController {
@@ -33,7 +36,7 @@ export class ItemController {
   ) {
     this.itemService.saveItem(
       file,
-      Object.assign(new ItemDto(), JSON.parse(body)),
+      Object.assign(new CreateItemDto(), JSON.parse(body)),
       (resp, error) => {
         if (error) {
           res.status(500).send(error);
@@ -41,6 +44,16 @@ export class ItemController {
         res.status(200).json(resp);
       },
     );
+  }
+
+  @Put()
+  updateItem(@Body() req: UpdateItemDto, @Res() res: Response) {
+    this.itemService.updateItem(req, (resp, error) => {
+      if (error) {
+        res.status(500).send(error);
+      }
+      res.status(200).json(resp);
+    });
   }
 
   @Delete(':id')
