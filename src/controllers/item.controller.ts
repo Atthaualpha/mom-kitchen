@@ -36,7 +36,7 @@ export class ItemController {
     this.itemService.saveItem(
       file,
       Object.assign(new CreateItemDto(), JSON.parse(body)),
-      (resp, error) => {
+      (resp: any, error: any) => {
         if (error) {
           res.status(500).send(error);
         }
@@ -47,7 +47,7 @@ export class ItemController {
 
   @Put()
   updateItem(@Body() req: UpdateItemDto, @Res() res: Response) {
-    this.itemService.updateItem(req, (resp, error) => {
+    this.itemService.updateItem(req, (resp: any, error: any) => {
       if (error) {
         res.status(500).send(error);
       }
@@ -57,7 +57,7 @@ export class ItemController {
 
   @Delete(':id')
   deleteItem(@Param('id') itemId: number, @Res() res: Response) {
-    this.itemService.deleteItem(itemId, (resp, error) => {
+    this.itemService.deleteItem(itemId, (resp: any, error: any) => {
       if (error) {
         res.status(500).send(error);
       }

@@ -28,4 +28,18 @@ export class IngredientService {
       callback(null, error);
     }
   }
+
+  async deleteIngredient(ingredientId: number, callback: any) {
+    try {
+      await this.ingredientModel.destroy({
+        where: {
+          id: ingredientId
+        }
+      })
+
+      callback({message: 'ok'})
+    }catch(error) {
+      callback(null, error)
+    }
+  }
 }

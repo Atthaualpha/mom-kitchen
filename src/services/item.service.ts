@@ -19,6 +19,10 @@ export class ItemService {
   constructor(
     @InjectModel(Item)
     private itemModel: typeof Item,
+    @InjectModel(FoodDet)
+    private foodDetModel: typeof FoodDet,
+    @InjectModel(MedicineDet)
+    private medicineDetModel: typeof MedicineDet,
   ) {}
 
   findByCriteria(params: any): Promise<Item[]> {
@@ -94,10 +98,46 @@ export class ItemService {
         },
       );
 
+      switch (body.itemType) {
+        case ItemTypeEnum.Food:
+          await this.updateFoodDet(body.id, body);
+          break;
+        case ItemTypeEnum.Medicine:
+          await this.updateMedicineDet(body.id, body);
+          break;
+      }
+
       callback({ message: 'ok' });
     } catch (error) {
       callback(null, error);
     }
+  }
+
+  private async updateFoodDet(itemId: number, body: UpdateItemDto) {
+    await this.foodDetModel.update(
+      {
+        time: body.time,
+        serving: body.serving,
+      },
+      {
+        where: {
+          itemId,
+        },
+      },
+    );
+  }
+
+  private async updateMedicineDet(itemId: number, body: UpdateItemDto) {
+    await this.medicineDetModel.update(
+      {
+        usage: body.usage,
+      },
+      {
+        where: {
+          itemId,
+        },
+      },
+    );
   }
 
   async deleteItem(itemId: number, callback: any) {
