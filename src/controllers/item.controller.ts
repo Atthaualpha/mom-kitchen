@@ -21,9 +21,14 @@ import { UpdateItemDto } from 'src/dto/request/updateItemDto';
 export class ItemController {
   constructor(private readonly itemService: ItemService) {}
 
-  @Get()
+  @Get("all")
   findByCriteria(@Req() req: Request): any {
     return this.itemService.findByCriteria(req.query);
+  }
+
+  @Get(':id')
+  findItemDetail(@Param('id') itemId: number) {
+    return this.itemService.findItemDetail(itemId);
   }
 
   @Post()

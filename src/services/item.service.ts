@@ -12,6 +12,7 @@ import { Op } from 'sequelize';
 import { StatusEnum } from 'src/constants/statusEnum';
 import { MedicineDet } from 'src/models/medicineDet.model';
 import { UpdateItemDto } from 'src/dto/request/updateItemDto';
+import { Author } from 'src/models/author.model';
 const fs = require('fs');
 
 @Injectable()
@@ -27,7 +28,7 @@ export class ItemService {
 
   findByCriteria(params: any): Promise<Item[]> {
     return this.itemModel.findAll({
-      attributes: ['id', 'name', 'image_url', 'description'],
+      attributes: ['id', 'name', 'image_url', 'description'],      
       include: [
         {
           attributes: [],
@@ -39,6 +40,43 @@ export class ItemService {
       where: {
         status: 1,
         ...this.buildFilterCriteria(params),
+      },
+    });
+  }
+
+  findItemDetail(itemId: number): Promise<Item> {
+    return this.itemModel.findOne({
+      attributes: ['id', 'name', 'image_url', 'description','item_type'],
+      include: [
+        {
+          attributes: ["name"],
+          model: Category,
+          required: true,
+        },
+        {
+          attributes: ["name"],
+          model: Author,
+          required: true,
+        },
+        {
+          attributes: ["description"],
+          model: Ingredient,
+        },
+        {
+          attributes: ["description"],
+          model: Step,
+        },
+        {
+          attributes: ["time","serving"],
+          model: FoodDet,
+        },
+        {
+          attributes: ["usage"],
+          model: MedicineDet,
+        },
+      ],
+      where: {
+        id: itemId
       },
     });
   }

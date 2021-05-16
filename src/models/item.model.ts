@@ -35,7 +35,7 @@ export class Item extends Model {
   @Column
   description: string;
 
-  @Column
+  @Column({field: 'item_type'})
   itemType: number;
 
   @Column

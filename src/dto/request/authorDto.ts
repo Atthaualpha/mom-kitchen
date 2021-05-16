@@ -1,5 +1,7 @@
+import { IsNotEmpty } from "class-validator"
 
 export class AuthorDTO {
-    id: number
+
+    @IsNotEmpty()
     name: string
 }
