@@ -1,7 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { CategoryDto } from 'src/dto/request/categoryDto';
 import { CategoryService } from '../services/category.service';
+import { Response } from 'express';
 
-@Controller("category")
+@Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
@@ -9,5 +11,18 @@ export class CategoryController {
   findAll(): any {
     return this.categoryService.findAllCategories();
   }
+
+  @Post()
+  createCategory(@Body() categoryDto: CategoryDto, @Res() res: Response): any {
+    return this.categoryService.createAuthor(
+      categoryDto,
+      (resp: any, error: any) => {
+        if (error) {
+          res.status(500).send(error);
+        }
+
+        res.status(200).send(resp);
+      },
+    );
+  }
 }
- 
