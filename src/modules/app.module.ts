@@ -1,4 +1,3 @@
-import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -24,6 +23,8 @@ import { ItemService } from './../services/item.service';
 import { CategoryService } from '../services/category.service';
 import { AutoSuggestService } from 'src/services/autosuggest.service';
 import { IngredientService } from 'src/services/ingredient.service';
+
+import { join } from 'path';
 
 @Module({
   imports: [
