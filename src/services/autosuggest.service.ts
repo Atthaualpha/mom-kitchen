@@ -15,7 +15,8 @@ export class AutoSuggestService {
     return this.itemModel
       .findAll({
         attributes: ['name'],
-        where: { name: { [Op.like]: `%${criterio}%` } },
+        where: { status: 1, name: { [Op.iLike]: `%${criterio}%` } },
+        group: 'name',
       })
       .then((e) => e.map((item) => item.name));
   }
@@ -25,6 +26,7 @@ export class AutoSuggestService {
       .findAll({
         attributes: ['time'],
         where: { time: { [Op.like]: `%${criterio}%` } },
+        group: 'time',
       })
       .then((e) => e.map((food) => food.time));
   }
@@ -34,6 +36,7 @@ export class AutoSuggestService {
       .findAll({
         attributes: ['serving'],
         order: [['serving', 'ASC']],
+        group: 'serving',
       })
       .then((e) => e.map((food) => food.serving));
   }

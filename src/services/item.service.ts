@@ -200,7 +200,7 @@ export class ItemService {
 
     new Map(Object.entries(params)).forEach((val, key) => {
       if (key === 'name') {
-        filters.name = { [Op.like]: `%${val}%` };
+        filters.name = { [Op.iLike]: `%${val}%` };
       }
 
       if (key === 'category') {
