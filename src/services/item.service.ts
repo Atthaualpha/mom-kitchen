@@ -12,7 +12,6 @@ import { Op } from 'sequelize';
 import { StatusEnum } from 'src/constants/statusEnum';
 import { MedicineDet } from 'src/models/medicineDet.model';
 import { UpdateItemDto } from 'src/dto/request/updateItemDto';
-import { Author } from 'src/models/author.model';
 const fs = require('fs');
 
 @Injectable()
@@ -51,11 +50,6 @@ export class ItemService {
         {
           attributes: ["name"],
           model: Category,
-          required: true,
-        },
-        {
-          attributes: ["name"],
-          model: Author,
           required: true,
         },
         {
@@ -98,7 +92,6 @@ export class ItemService {
 
       await this.itemModel.create(
         {
-          authorId: body.authorId,
           categoryId: body.categoryId,
           name: body.name,
           description: body.description,

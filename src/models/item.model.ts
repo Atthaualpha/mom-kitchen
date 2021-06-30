@@ -1,6 +1,5 @@
 import { Ingredient } from './ingredient.model';
 import { Category } from 'src/models/category.model';
-import { Author } from 'src/models/author.model';
 import { Step } from './step.model';
 import { FoodDet } from './foodDet.model';
 import {
@@ -40,13 +39,6 @@ export class Item extends Model {
 
   @Column
   status: number;
-
-  @ForeignKey(() => Author)
-  @Column({ field: 'author_id' })
-  authorId: number;
-
-  @BelongsTo(() => Author)
-  author: Author;
 
   @ForeignKey(() => Category)
   @Column({ field: 'category_id' })
