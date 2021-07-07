@@ -48,7 +48,7 @@ export class ItemService {
       attributes: ['id', 'name', 'image_url', 'description','item_type'],
       include: [
         {
-          attributes: ["name"],
+          attributes: ["id"],
           model: Category,
           required: true,
         },
