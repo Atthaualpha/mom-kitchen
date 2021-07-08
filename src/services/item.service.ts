@@ -27,7 +27,7 @@ export class ItemService {
 
   findByCriteria(params: any): Promise<Item[]> {
     return this.itemModel.findAll({
-      attributes: ['id', 'name', 'image_url', 'description'],      
+      attributes: ['id', 'name', 'image_url', 'description'],
       include: [
         {
           attributes: [],
@@ -45,32 +45,32 @@ export class ItemService {
 
   findItemDetail(itemId: number): Promise<Item> {
     return this.itemModel.findOne({
-      attributes: ['id', 'name', 'image_url', 'description','item_type'],
+      attributes: ['id', 'name', 'image_url', 'description', 'item_type'],
       include: [
         {
-          attributes: ["id"],
+          attributes: ['id'],
           model: Category,
           required: true,
         },
         {
-          attributes: ["description"],
+          attributes: ['id', 'description'],
           model: Ingredient,
         },
         {
-          attributes: ["description"],
+          attributes: ['id', 'description'],
           model: Step,
         },
         {
-          attributes: ["time","serving"],
+          attributes: ['time', 'serving'],
           model: FoodDet,
         },
         {
-          attributes: ["usage"],
+          attributes: ['usage'],
           model: MedicineDet,
         },
       ],
       where: {
-        id: itemId
+        id: itemId,
       },
     });
   }
