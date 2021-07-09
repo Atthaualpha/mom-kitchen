@@ -90,7 +90,7 @@ export class ItemService {
 
       const imageUrl = this.buildImageUrl(file);
 
-      await this.itemModel.create(
+      let itemCreated = await this.itemModel.create(
         {
           categoryId: body.categoryId,
           name: body.name,
@@ -109,7 +109,7 @@ export class ItemService {
 
       this.saveImage(imageUrl, file);
 
-      callback({ message: 'ok' });
+      callback({ id: itemCreated.id });
     } catch (error) {
       callback(null, error);
     }
