@@ -3,7 +3,7 @@ import { Step } from 'src/models/step.model';
 import { Ingredient } from 'src/models/ingredient.model';
 import { ItemTypeEnum } from './../constants/itemTypeEnum';
 import { Category } from 'src/models/category.model';
-import { ItemDto } from './../dto/request/itemDto';
+import { CreateItemDto } from '../dto/request/createItemDto';
 import { join } from 'path';
 import { Item } from './../models/item.model';
 import { Injectable } from '@nestjs/common';
@@ -11,6 +11,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { StatusEnum } from 'src/constants/statusEnum';
 import { MedicineDet } from 'src/models/medicineDet.model';
+import { UpdateItemDto } from 'src/dto/request/updateItemDto';
 const fs = require('fs');
 
 @Injectable()
@@ -18,6 +19,10 @@ export class ItemService {
   constructor(
     @InjectModel(Item)
     private itemModel: typeof Item,
+    @InjectModel(FoodDet)
+    private foodDetModel: typeof FoodDet,
+    @InjectModel(MedicineDet)
+    private medicineDetModel: typeof MedicineDet,
   ) {}
 
   findByCriteria(params: any): Promise<Item[]> {
@@ -38,7 +43,43 @@ export class ItemService {
     });
   }
 
-  saveItem(file: Express.Multer.File, body: ItemDto, callback: any) {
+  findItemDetail(itemId: number): Promise<Item> {
+    return this.itemModel.findOne({
+      attributes: ['id', 'name', 'image_url', 'description', 'item_type'],
+      include: [
+        {
+          attributes: ['id'],
+          model: Category,
+          required: true,
+        },
+        {
+          attributes: ['id', 'description'],
+          model: Ingredient,
+        },
+        {
+          attributes: ['id', 'description'],
+          model: Step,
+        },
+        {
+          attributes: ['time', 'serving'],
+          model: FoodDet,
+        },
+        {
+          attributes: ['usage'],
+          model: MedicineDet,
+        },
+      ],
+      where: {
+        id: itemId,
+      },
+    });
+  }
+
+  async saveItem(
+    file: Express.Multer.File,
+    body: CreateItemDto,
+    callback: any,
+  ) {
     try {
       const ingredients: any[] = body.ingredients.map((ele) => {
         return { description: ele };
@@ -49,9 +90,8 @@ export class ItemService {
 
       const imageUrl = this.buildImageUrl(file);
 
-      this.itemModel.create(
+      let itemCreated = await this.itemModel.create(
         {
-          authorId: body.authorId,
           categoryId: body.categoryId,
           name: body.name,
           description: body.description,
@@ -69,15 +109,71 @@ export class ItemService {
 
       this.saveImage(imageUrl, file);
 
+      callback({ id: itemCreated.id });
+    } catch (error) {
+      callback(null, error);
+    }
+  }
+
+  async updateItem(body: UpdateItemDto, callback: any) {
+    try {
+      await this.itemModel.update(
+        {
+          name: body.name,
+          description: body.description,
+        },
+        {
+          where: {
+            id: body.id,
+          },
+        },
+      );
+
+      switch (body.itemType) {
+        case ItemTypeEnum.Food:
+          await this.updateFoodDet(body.id, body);
+          break;
+        case ItemTypeEnum.Medicine:
+          await this.updateMedicineDet(body.id, body);
+          break;
+      }
+
       callback({ message: 'ok' });
     } catch (error) {
       callback(null, error);
     }
   }
 
-  deleteItem(itemId: number, callback: any) {
+  private async updateFoodDet(itemId: number, body: UpdateItemDto) {
+    await this.foodDetModel.update(
+      {
+        time: body.time,
+        serving: body.serving,
+      },
+      {
+        where: {
+          itemId,
+        },
+      },
+    );
+  }
+
+  private async updateMedicineDet(itemId: number, body: UpdateItemDto) {
+    await this.medicineDetModel.update(
+      {
+        usage: body.usage,
+      },
+      {
+        where: {
+          itemId,
+        },
+      },
+    );
+  }
+
+  async deleteItem(itemId: number, callback: any) {
     try {
-      this.itemModel.update(
+      await this.itemModel.update(
         { status: StatusEnum.Inactive },
         {
           where: {
@@ -97,7 +193,7 @@ export class ItemService {
 
     new Map(Object.entries(params)).forEach((val, key) => {
       if (key === 'name') {
-        filters.name = { [Op.like]: `%${val}%` };
+        filters.name = { [Op.iLike]: `%${val}%` };
       }
 
       if (key === 'category') {
@@ -116,7 +212,7 @@ export class ItemService {
     return filters;
   }
 
-  private buildItemDetail(body: ItemDto): any {
+  private buildItemDetail(body: CreateItemDto): any {
     let itemDetail: any = {};
     switch (body.itemType) {
       case ItemTypeEnum.Food:
