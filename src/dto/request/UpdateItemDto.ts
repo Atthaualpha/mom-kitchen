@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { ItemTypeEnum } from './../../constants/itemTypeEnum';
+import { ItemTypeEnum } from '../../constants/itemTypeEnum';
 export class UpdateItemDto {
 
   @IsNotEmpty()
