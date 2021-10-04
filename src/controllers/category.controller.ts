@@ -14,7 +14,7 @@ export class CategoryController {
 
   @Post()
   createCategory(@Body() categoryDto: CategoryDto, @Res() res: Response): any {
-    return this.categoryService.createAuthor(
+    return this.categoryService.createCategory(
       categoryDto,
       (resp: any, error: any) => {
         if (error) {

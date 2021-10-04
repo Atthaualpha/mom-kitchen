@@ -20,22 +20,41 @@ import { ItemService } from './../services/item.service';
 import { CategoryService } from '../services/category.service';
 import { AutoSuggestService } from 'src/services/autosuggest.service';
 import { IngredientService } from 'src/services/ingredient.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import configuration from 'src/config/configuration';
 
 import { join } from 'path';
-
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: `.env.${process.env.NODE_ENV}`,
+      load: [configuration]
+    }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
-    SequelizeModule.forRoot({
-      dialect: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '1234',
-      database: 'MomKitchen',
-      models: [Category, Item, Step, Ingredient, FoodDet, MedicineDet],
+    SequelizeModule.forRootAsync({      
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        const {
+          host,
+          database,
+          username,
+          password,
+          dialectOptions,
+        } = configService.get('database');
+        return {
+          dialect: 'postgres',
+          dialectOptions,
+          host,
+          port: 5432,
+          username,
+          password,
+          database,
+          models: [Category, Item, Step, Ingredient, FoodDet, MedicineDet]
+        }
+      },     
+      inject: [ConfigService],
     }),
     SequelizeModule.forFeature([
       Category,

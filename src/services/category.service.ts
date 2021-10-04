@@ -14,8 +14,8 @@ export class CategoryService {
     return this.categoryModel.findAll();
   }
 
-  async createAuthor(categoryDto: CategoryDto, callback: any) {
-    try {
+  async createCategory(categoryDto: CategoryDto, callback: any) {
+    try {      
       await this.categoryModel.create(categoryDto)
       callback({ message : 'ok'})   
     } catch (error) {
