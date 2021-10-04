@@ -1,5 +1,4 @@
 import { CreateItemDto } from '../dto/request/createItemDto';
-import { ModifyItemDto } from '../dto/request/modifyItemDto';
 import {
   Body,
   Controller,
@@ -16,7 +15,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express';
 import { ItemService } from '../services/item.service';
-
+import { UpdateItemDto } from 'src/dto/request/updateItemDto';
 
 @Controller('item')
 export class ItemController {
@@ -52,7 +51,7 @@ export class ItemController {
   }
 
   @Put()
-  updateItem(@Body() req: ModifyItemDto, @Res() res: Response) {
+  updateItem(@Body() req: UpdateItemDto, @Res() res: Response) {
     this.itemService.updateItem(req, (resp: any, error: any) => {
       if (error) {
         res.status(500).send(error);

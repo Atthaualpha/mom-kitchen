@@ -4,7 +4,6 @@ import { Ingredient } from '../models/ingredient.model';
 import { ItemTypeEnum } from './../constants/itemTypeEnum';
 import { Category } from '../models/category.model';
 import { CreateItemDto } from '../dto/request/createItemDto';
-import { ModifyItemDto } from '../dto/request/modifyItemDto';
 import { join } from 'path';
 import { Item } from './../models/item.model';
 import { Injectable } from '@nestjs/common';
@@ -12,7 +11,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { StatusEnum } from '../constants/statusEnum';
 import { MedicineDet } from '../models/medicineDet.model';
-
+import { UpdateItemDto } from '../dto/request/updateItemDto';
 const fs = require('fs');
 
 @Injectable()
@@ -116,7 +115,7 @@ export class ItemService {
     }
   }
 
-  async updateItem(body: ModifyItemDto, callback: any) {
+  async updateItem(body: UpdateItemDto, callback: any) {
     try {
       await this.itemModel.update(
         {
@@ -145,7 +144,7 @@ export class ItemService {
     }
   }
 
-  private async updateFoodDet(itemId: number, body: ModifyItemDto) {
+  private async updateFoodDet(itemId: number, body: UpdateItemDto) {
     await this.foodDetModel.update(
       {
         time: body.time,
@@ -159,7 +158,7 @@ export class ItemService {
     );
   }
 
-  private async updateMedicineDet(itemId: number, body: ModifyItemDto) {
+  private async updateMedicineDet(itemId: number, body: UpdateItemDto) {
     await this.medicineDetModel.update(
       {
         usage: body.usage,
