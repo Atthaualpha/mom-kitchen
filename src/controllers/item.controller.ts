@@ -15,7 +15,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express';
 import { ItemService } from '../services/item.service';
-import { UpdateItemDto } from 'src/dto/request/updateItemDto';
+import { UpdateItemDto } from '../dto/request/updateItemDto';
 
 @Controller('item')
 export class ItemController {

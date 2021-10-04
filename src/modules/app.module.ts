@@ -4,24 +4,24 @@ import { SequelizeModule } from '@nestjs/sequelize';
 
 import { MedicineDet } from './../models/medicineDet.model';
 import { Item } from './../models/item.model';
-import { Category } from 'src/models/category.model';
-import { Step } from 'src/models/step.model';
-import { Ingredient } from 'src/models/ingredient.model';
-import { FoodDet } from 'src/models/foodDet.model';
+import { Category } from '../models/category.model';
+import { Step } from '../models/step.model';
+import { Ingredient } from '../models/ingredient.model';
+import { FoodDet } from '../models/foodDet.model';
 
 import { IngredientController } from './../controllers/ingredient.controller';
 import { CategoryController } from '../controllers/category.controller';
 import { ItemController } from '../controllers/item.controller';
-import { AutoSuggestController } from 'src/controllers/autosuggest.controller';
-import { StepController } from 'src/controllers/step.controller';
+import { AutoSuggestController } from '../controllers/autosuggest.controller';
+import { StepController } from '../controllers/step.controller';
 
 import { StepService } from './../services/step.service';
 import { ItemService } from './../services/item.service';
 import { CategoryService } from '../services/category.service';
-import { AutoSuggestService } from 'src/services/autosuggest.service';
-import { IngredientService } from 'src/services/ingredient.service';
+import { AutoSuggestService } from '../services/autosuggest.service';
+import { IngredientService } from '../services/ingredient.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import configuration from 'src/config/configuration';
+import configuration from '../config/configuration';
 
 import { join } from 'path';
 @Module({

@@ -1,16 +1,16 @@
 import { FoodDet } from './../models/foodDet.model';
-import { Step } from 'src/models/step.model';
-import { Ingredient } from 'src/models/ingredient.model';
+import { Step } from '../models/step.model';
+import { Ingredient } from '../models/ingredient.model';
 import { ItemTypeEnum } from './../constants/itemTypeEnum';
-import { Category } from 'src/models/category.model';
+import { Category } from '../models/category.model';
 import { CreateItemDto } from '../dto/request/createItemDto';
 import { join } from 'path';
 import { Item } from './../models/item.model';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
-import { StatusEnum } from 'src/constants/statusEnum';
-import { MedicineDet } from 'src/models/medicineDet.model';
+import { StatusEnum } from '../constants/statusEnum';
+import { MedicineDet } from '../models/medicineDet.model';
 import { UpdateItemDto } from '../dto/request/updateItemDto';
 const fs = require('fs');
 
