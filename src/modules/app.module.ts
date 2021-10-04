@@ -21,7 +21,7 @@ import { CategoryService } from '../services/category.service';
 import { AutoSuggestService } from '../services/autosuggest.service';
 import { IngredientService } from '../services/ingredient.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import configuration from '../config/configuration';
+import configuration from './configuration';
 
 import { join } from 'path';
 @Module({
