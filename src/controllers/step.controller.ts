@@ -12,12 +12,13 @@ import { StepService } from 'src/services/step.service';
 import { Response } from 'express';
 import { CreateStepDto } from 'src/dto/request/createStepDto';
 
-@Controller('step')
+@Controller('item')
 export class StepController {
   constructor(private readonly stepService: StepService) {}
 
-  @Post()
-  createStep(@Body() req: CreateStepDto, @Res() res: Response) {
+  @Post(':id/step')
+  createStep(@Param('id') itemId: number, @Body() req: CreateStepDto, @Res() res: Response) {
+    req.itemId = itemId
     this.stepService.createStep(req, (resp: any, error: any) => {
       if (error) {
         res.status(500).send(error);
@@ -26,8 +27,9 @@ export class StepController {
     });
   }
 
-  @Put()
-  updateStep(@Body() req: UpdateStepDto, @Res() res: Response) {
+  @Put(':id/step/:step_id')
+  updateStep(@Param('id') itemId: number,@Param('step_id') stepId: number, @Body() req: UpdateStepDto, @Res() res: Response) {
+    req.id = stepId
     this.stepService.updateStep(req, (resp: any, error: any) => {
       if (error) {
         res.status(500).send(error);
@@ -36,8 +38,8 @@ export class StepController {
     });
   }
 
-  @Delete(':id')
-  deleteStep(@Param('id') stepId: number, @Res() res: Response) {
+  @Delete(':id/step/:step_id')
+  deleteStep(@Param('id') itemId: number,@Param('step_id') stepId: number, @Res() res: Response) {
     this.stepService.deleteStep(stepId, (resp: any, error: any) => {
       if (error) {
         res.status(500).send(error);

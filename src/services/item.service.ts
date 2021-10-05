@@ -88,7 +88,10 @@ export class ItemService {
         return { description: ele };
       });
 
-      const imageUrl = this.buildImageUrl(file);
+      let imageUrl = "not-available.jpg"
+      if (file != null) {
+        imageUrl = this.buildImageUrl(file);
+      }
 
       let itemCreated = await this.itemModel.create(
         {
@@ -107,9 +110,11 @@ export class ItemService {
         },
       );
 
-      this.saveImage(imageUrl, file);
+      if (file != null) {
+        this.saveImage(imageUrl, file);
+      }
 
-      callback({ id: itemCreated.id });
+      callback(itemCreated);
     } catch (error) {
       callback(null, error);
     }

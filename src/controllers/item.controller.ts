@@ -1,3 +1,4 @@
+import { ItemTypeEnum } from './../constants/itemTypeEnum';
 import { CreateItemDto } from '../dto/request/createItemDto';
 import {
   Body,
@@ -21,7 +22,7 @@ import { UpdateItemDto } from 'src/dto/request/updateItemDto';
 export class ItemController {
   constructor(private readonly itemService: ItemService) {}
 
-  @Get("all")
+  @Get('all')
   findByCriteria(@Req() req: Request): any {
     return this.itemService.findByCriteria(req.query);
   }
@@ -32,8 +33,19 @@ export class ItemController {
   }
 
   @Post()
+  saveItem(@Body() body: CreateItemDto, @Res() res: Response) {
+    body.itemType = ItemTypeEnum.Food;
+    this.itemService.saveItem(null, body, (resp: any, error: any) => {
+      if (error) {
+        res.status(500).send(error);
+      }
+      res.status(200).json(resp);
+    });
+  }
+
+  @Post('image')
   @UseInterceptors(FileInterceptor('file'))
-  uploadFile(
+  saveItemWithImage(
     @UploadedFile() file: Express.Multer.File,
     @Body('request') body: any,
     @Res() res: Response,
@@ -50,8 +62,14 @@ export class ItemController {
     );
   }
 
-  @Put()
-  updateItem(@Body() req: UpdateItemDto, @Res() res: Response) {
+  @Put(':id')
+  updateItem(
+    @Param('id') itemId: number,
+    @Body() req: UpdateItemDto,
+    @Res() res: Response,
+  ) {
+    req.id = itemId;
+    req.itemType = ItemTypeEnum.Food;
     this.itemService.updateItem(req, (resp: any, error: any) => {
       if (error) {
         res.status(500).send(error);

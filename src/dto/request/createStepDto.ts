@@ -4,6 +4,5 @@ export class CreateStepDto {
   @IsNotEmpty()
   description: string;
 
-  @IsNotEmpty()
   itemId: number;
 }

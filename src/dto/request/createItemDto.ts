@@ -12,14 +12,10 @@ export class CreateItemDto {
   @IsNotEmpty()
   categoryId: number;
 
-  @IsNotEmpty()
-  authorId: number;
-
   ingredients: string[];
 
   steps: string[];
 
-  @IsNotEmpty()
   itemType: ItemTypeEnum;
 
   //food_det
