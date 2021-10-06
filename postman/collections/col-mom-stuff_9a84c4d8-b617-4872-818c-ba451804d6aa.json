@@ -8,11 +8,14 @@
         {
             "name": "Sample endpoint: Returns details about a particular user",
             "id": "01f815d9-ff45-491a-a836-80879c323eb1",
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
             "request": {
                 "method": "GET",
                 "header": [],
                 "url": {
-                    "raw": "{{baseUrl}}/user?id=56518555",
+                    "raw": "{{baseUrl}}/user?id=1234",
                     "host": [
                         "{{baseUrl}}"
                     ],
@@ -22,7 +25,7 @@
                     "query": [
                         {
                             "key": "id",
-                            "value": "56518555",
+                            "value": "1234",
                             "description": "(Required) ID of the user"
                         }
                     ]
