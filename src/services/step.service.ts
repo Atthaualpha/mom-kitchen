@@ -13,12 +13,12 @@ export class StepService {
 
   async createStep(body: CreateStepDto, callback: any) {
     try {
-      await this.stepModel.create({
+      let stepCreated = await this.stepModel.create({
         description: body.description,
         itemId: body.itemId,
       });
 
-      callback({ message: 'ok' });
+      callback(stepCreated);
     } catch (error) {
       callback(null, error);
     }
