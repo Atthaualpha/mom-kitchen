@@ -21,7 +21,7 @@ export class StepController {
     req.itemId = itemId
     this.stepService.createStep(req, (resp: any, error: any) => {
       if (error) {
-        res.status(500).send(error);
+        return res.status(500).send(error);
       }
       res.status(200).json(resp);
     });
@@ -32,7 +32,7 @@ export class StepController {
     req.id = stepId
     this.stepService.updateStep(req, (resp: any, error: any) => {
       if (error) {
-        res.status(500).send(error);
+        return res.status(500).send(error);
       }
       res.status(200).json(resp);
     });
@@ -42,7 +42,7 @@ export class StepController {
   deleteStep(@Param('id') itemId: number,@Param('step_id') stepId: number, @Res() res: Response) {
     this.stepService.deleteStep(stepId, (resp: any, error: any) => {
       if (error) {
-        res.status(500).send(error);
+        return res.status(500).send(error);
       }
       res.status(200).json(resp);
     });

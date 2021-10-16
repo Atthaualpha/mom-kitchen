@@ -12,6 +12,7 @@ import { Op } from 'sequelize';
 import { StatusEnum } from '../constants/statusEnum';
 import { MedicineDet } from '../models/medicineDet.model';
 import { UpdateItemDto } from '../dto/request/updateItemDto';
+import { table } from 'console';
 const fs = require('fs');
 
 @Injectable()
@@ -23,7 +24,7 @@ export class ItemService {
     private foodDetModel: typeof FoodDet,
     @InjectModel(MedicineDet)
     private medicineDetModel: typeof MedicineDet,
-  ) {}
+  ) { }
 
   findByCriteria(params: any): Promise<Item[]> {
     return this.itemModel.findAll({
@@ -43,8 +44,8 @@ export class ItemService {
     });
   }
 
-  findItemDetail(itemId: number): Promise<Item> {
-    return this.itemModel.findOne({
+  async findItemDetail(itemId: number, callback) {
+    let item = await this.itemModel.findOne({
       attributes: ['id', 'name', 'image_url', 'description', 'item_type'],
       include: [
         {
@@ -71,8 +72,11 @@ export class ItemService {
       ],
       where: {
         id: itemId,
+        status: 1
       },
     });
+
+    callback(item, null)
   }
 
   async saveItem(
@@ -81,12 +85,22 @@ export class ItemService {
     callback: any,
   ) {
     try {
-      const ingredients: any[] = body.ingredients.map((ele) => {
-        return { description: ele };
-      });
-      const steps: any[] = body.steps.map((ele) => {
-        return { description: ele };
-      });
+      let ingredients: any[];
+      let steps: any[];
+      let tables: any[] = [FoodDet, MedicineDet];
+      if (body.ingredients) {
+        tables.push(Ingredient)
+        ingredients = body.ingredients.map((ele) => {
+          return { description: ele };
+        });
+      }
+
+      if (body.steps) {
+        tables.push(Step)
+        steps = body.steps.map((ele) => {
+          return { description: ele };
+        });
+      }
 
       let imageUrl = "not-available.jpg"
       if (file != null) {
@@ -106,14 +120,13 @@ export class ItemService {
           ...this.buildItemDetail(body),
         },
         {
-          include: [Ingredient, Step, FoodDet, MedicineDet],
+          include: tables,
         },
       );
 
       if (file != null) {
         this.saveImage(imageUrl, file);
       }
-
       callback(itemCreated);
     } catch (error) {
       callback(null, error);
