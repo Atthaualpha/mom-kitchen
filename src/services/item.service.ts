@@ -23,14 +23,14 @@ export class ItemService {
     private foodDetModel: typeof FoodDet,
     @InjectModel(MedicineDet)
     private medicineDetModel: typeof MedicineDet,
-  ) {}
+  ) { }
 
   findByCriteria(params: any): Promise<Item[]> {
     return this.itemModel.findAll({
       attributes: ['id', 'name', 'image_url', 'description'],
       include: [
         {
-          attributes: [],
+          attributes: ['id', 'name'],
           model: Category,
           required: true,
         },
@@ -43,8 +43,8 @@ export class ItemService {
     });
   }
 
-  findItemDetail(itemId: number): Promise<Item> {
-    return this.itemModel.findOne({
+  async findItemDetail(itemId: number, callback) {
+    let item = await this.itemModel.findOne({
       attributes: ['id', 'name', 'image_url', 'description', 'item_type'],
       include: [
         {
@@ -71,8 +71,11 @@ export class ItemService {
       ],
       where: {
         id: itemId,
+        status: 1
       },
     });
+
+    callback(item, null)
   }
 
   async saveItem(
@@ -81,12 +84,18 @@ export class ItemService {
     callback: any,
   ) {
     try {
-      const ingredients: any[] = body.ingredients.map((ele) => {
-        return { description: ele };
-      });
-      const steps: any[] = body.steps.map((ele) => {
-        return { description: ele };
-      });
+      let ingredients: any[];
+      let steps: any[];
+      let tables: any[] = [FoodDet, MedicineDet];
+      if (body.ingredients) {
+        tables.push(Ingredient)
+        ingredients = body.ingredients;
+      }
+
+      if (body.steps) {
+        tables.push(Step)
+        steps = body.steps;
+      }
 
       let imageUrl = "not-available.jpg"
       if (file != null) {
@@ -106,14 +115,13 @@ export class ItemService {
           ...this.buildItemDetail(body),
         },
         {
-          include: [Ingredient, Step, FoodDet, MedicineDet],
+          include: tables,
         },
       );
 
       if (file != null) {
         this.saveImage(imageUrl, file);
       }
-
       callback(itemCreated);
     } catch (error) {
       callback(null, error);

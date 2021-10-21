@@ -18,7 +18,7 @@ export class CategoryController {
       categoryDto,
       (resp: any, error: any) => {
         if (error) {
-          res.status(500).send(error);
+          return res.status(500).send(error);
         }
 
         res.status(200).send(resp);

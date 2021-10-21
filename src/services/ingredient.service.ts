@@ -13,12 +13,12 @@ export class IngredientService {
 
   async createIngredient(body: CreateIngredientDto, callback: any) {
     try {
-      await this.ingredientModel.create({
+     let newIngredient =  await this.ingredientModel.create({
         description: body.description,
         itemId: body.itemId,
       });
 
-      callback({ message: 'ok' });
+      callback(newIngredient);
     } catch (error) {
       callback(null, error);
     }

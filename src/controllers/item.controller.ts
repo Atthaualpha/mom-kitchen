@@ -28,8 +28,18 @@ export class ItemController {
   }
 
   @Get(':id')
-  findItemDetail(@Param('id') itemId: number) {
-    return this.itemService.findItemDetail(itemId);
+  findItemDetail(@Param('id') itemId: number, @Res() res: Response) {
+    this.itemService.findItemDetail(itemId, (resp: any, error: any) => {
+      if (error) {
+        return res.status(500).send(error);
+      }
+      if(!resp) {
+        return res.status(404).send({
+          message: "Item not found"
+        });
+      }
+      res.status(200).json(resp);
+    });
   }
 
   @Post()
@@ -37,7 +47,7 @@ export class ItemController {
     body.itemType = ItemTypeEnum.Food;
     this.itemService.saveItem(null, body, (resp: any, error: any) => {
       if (error) {
-        res.status(500).send(error);
+        return res.status(500).send(error);
       }
       res.status(200).json(resp);
     });
@@ -55,7 +65,7 @@ export class ItemController {
       Object.assign(new CreateItemDto(), JSON.parse(body)),
       (resp: any, error: any) => {
         if (error) {
-          res.status(500).send(error);
+          return res.status(500).send(error);
         }
         res.status(200).json(resp);
       },
@@ -72,7 +82,7 @@ export class ItemController {
     req.itemType = ItemTypeEnum.Food;
     this.itemService.updateItem(req, (resp: any, error: any) => {
       if (error) {
-        res.status(500).send(error);
+        return res.status(500).send(error);
       }
       res.status(200).json(resp);
     });
@@ -82,7 +92,7 @@ export class ItemController {
   deleteItem(@Param('id') itemId: number, @Res() res: Response) {
     this.itemService.deleteItem(itemId, (resp: any, error: any) => {
       if (error) {
-        res.status(500).send(error);
+        return res.status(500).send(error);
       }
       res.status(200).json(resp);
     });

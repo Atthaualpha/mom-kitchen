@@ -25,7 +25,7 @@ export class IngredientController {
     req.itemId = itemId;
     this.ingredientService.createIngredient(req, (resp: any, error: any) => {
       if (error) {
-        res.status(500).send(error);
+        return res.status(500).send(error);
       }
       res.status(200).json(resp);
     });
@@ -41,7 +41,7 @@ export class IngredientController {
     req.id = ingredientId;
     this.ingredientService.updateIngredient(req, (resp: any, error: any) => {
       if (error) {
-        res.status(500).send(error);
+        return res.status(500).send(error);
       }
       res.status(200).json(resp);
     });
@@ -57,7 +57,7 @@ export class IngredientController {
       ingredientId,
       (resp: any, error: any) => {
         if (error) {
-          res.status(500).send(error);
+          return res.status(500).send(error);
         }
         res.status(200).json(resp);
       },

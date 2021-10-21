@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { SequelizeModule } from '@nestjs/sequelize';
 
@@ -24,6 +24,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from '../config/configuration';
 
 import { join } from 'path';
+import { AuthMiddleware } from 'src/middleware/auth.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,7 +34,7 @@ import { join } from 'path';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
-    SequelizeModule.forRootAsync({      
+    SequelizeModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const {
@@ -53,7 +54,7 @@ import { join } from 'path';
           database,
           models: [Category, Item, Step, Ingredient, FoodDet, MedicineDet]
         }
-      },     
+      },
       inject: [ConfigService],
     }),
     SequelizeModule.forFeature([
@@ -80,4 +81,9 @@ import { join } from 'path';
     StepService,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware)
+      .forRoutes('*')
+  }
+}
