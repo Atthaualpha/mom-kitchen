@@ -12,7 +12,6 @@ import { Op } from 'sequelize';
 import { StatusEnum } from '../constants/statusEnum';
 import { MedicineDet } from '../models/medicineDet.model';
 import { UpdateItemDto } from '../dto/request/updateItemDto';
-import { table } from 'console';
 const fs = require('fs');
 
 @Injectable()
@@ -90,16 +89,12 @@ export class ItemService {
       let tables: any[] = [FoodDet, MedicineDet];
       if (body.ingredients) {
         tables.push(Ingredient)
-        ingredients = body.ingredients.map((ele) => {
-          return { description: ele };
-        });
+        ingredients = body.ingredients;
       }
 
       if (body.steps) {
         tables.push(Step)
-        steps = body.steps.map((ele) => {
-          return { description: ele };
-        });
+        steps = body.steps;
       }
 
       let imageUrl = "not-available.jpg"
