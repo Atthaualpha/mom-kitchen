@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from "express";
 export class AuthMiddleware implements NestMiddleware {
     use(req: Request, res: Response, next: NextFunction) {
 
-        const allowedScopes = ["furytest1", "furytest2"]
+        const allowedScopes = ["test", "test2"]
 
         if ((req.headers["x-auth-token"] == null || req.headers["x-auth-token"] == '') && req.baseUrl != "") {
             return res.status(401).json({ message: "Access Denied" });
