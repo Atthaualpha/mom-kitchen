@@ -7,7 +7,7 @@ export class AuthMiddleware implements NestMiddleware {
 
         const allowedScopes = ["test1", "test2"]
 
-        if ((req.headers["x-auth-token"] == null || req.headers["x-auth-token"] == '') && req.baseUrl != "") {
+        if ((req.headers["x-auth-token"] == null || req.headers["x-auth-token"] == '' || req.headers["x-auth-token"].length < 3) && req.baseUrl != "") {
             return res.status(401).json({ message: "Access Denied" });
         } else {
             if (req.query["api"] && (allowedScopes.findIndex(scope => scope == req.query["api"]) == -1)) {
